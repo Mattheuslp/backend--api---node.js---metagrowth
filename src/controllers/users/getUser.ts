@@ -15,7 +15,10 @@ export async function getUser(request: FastifyRequest, reply: FastifyReply) {
         return reply.status(200).send({
             user: {
                 ...user,
-                password_hash: undefined
+                password_hash: undefined,
+                id: undefined,
+                created_at: undefined,
+                imgUrl: ''
             }
         })
 

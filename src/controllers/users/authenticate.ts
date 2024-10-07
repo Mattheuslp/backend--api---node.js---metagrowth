@@ -28,7 +28,7 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
         const refreshToken = await reply.jwtSign({}, {
             sign: {
              sub: user.id,
-             expiresIn: '1m'
+             expiresIn: '7d'
             }
         })
 

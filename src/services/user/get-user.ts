@@ -24,6 +24,8 @@ export class GetUserProfileService{
         if(!user) {
             throw new Error('Conteúdo não encontrado')
         }
+        
+        console.log('user', user)
 
         return {
             user
