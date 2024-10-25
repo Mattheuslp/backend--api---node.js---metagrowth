@@ -9,7 +9,7 @@ export async function logout(request:FastifyRequest, reply: FastifyReply) {
         const refreshToken = request.cookies.refreshToken;
 
         if (!refreshToken) {
-            return reply.status(401).send({ error: 'No refresh token provided' });
+            return reply.status(403).send({ error: 'No refresh token provided' });
         }
 
         const authenticate = authenticateFactory()

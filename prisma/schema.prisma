@@ -14,8 +14,7 @@ datasource db {
 }
 
 enum Role {
-  ADMIN
-  SUPERVISOR
+  MANAGER
   MEMBER
 }
 
@@ -24,10 +23,19 @@ model User {
   name          String
   email         String         @unique
   role          Role           @default(MEMBER)
-  position      String?
   password_hash String
   created_at    DateTime       @default(now())
   RefreshToken  RefreshToken[]
+
+  // Campos de colaborador
+  teamId         String?
+  team           Team?     @relation(fields: [teamId], references: [id])
+  admission_date DateTime?
+  phone          String?
+  enrollment     String?
+  education      String?
+  bio            String?
+  certifications String?
 
   @@map("users")
 }
@@ -41,4 +49,12 @@ model RefreshToken {
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("refreshToken")
+}
+
+model Team {
+  id    String @id @default(uuid())
+  name  String
+  Users User[]
+
+  @@map("teams")
 }

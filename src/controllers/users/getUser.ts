@@ -18,7 +18,6 @@ export async function getUser(request: FastifyRequest, reply: FastifyReply) {
                 password_hash: undefined,
                 id: undefined,
                 created_at: undefined,
-                imgUrl: ''
             }
         })
 
