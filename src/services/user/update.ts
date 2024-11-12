@@ -8,19 +8,17 @@ export interface UpdateUserServiceRequest {
 
 
 export class UpdateUserService {
-    private userRepository: UsersRepositoryInterface
+    private userRepository: UsersRepositoryInterface;
 
     constructor(userRepository: UsersRepositoryInterface) {
-        this.userRepository = userRepository
+        this.userRepository = userRepository;
     }
 
     async execute({ userId, updateData }: UpdateUserServiceRequest) {
-
         try {
-            await this.userRepository.update(userId, updateData)
+            await this.userRepository.update(userId, updateData);
         } catch (error) {
-            throw error
+            throw error;
         }
-
     }
 }

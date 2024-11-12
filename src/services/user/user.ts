@@ -2,6 +2,7 @@
 import { hash } from 'bcryptjs'
 import { UsersRepositoryInterface } from "../../repositories/users-repository-interface";
 import { User } from '@prisma/client';
+import { ImageRepositoryInterface } from '../../repositories/cloudflare/image-repository-interface';
 
 
 export interface RegisterServiceRequest {
@@ -14,8 +15,11 @@ export interface RegisterServiceRequest {
     education?: string;
     enrollment?: string;
     phone?: string;
-    role?: 'MANAGER' | 'MEMBER' 
+    role?: 'MANAGER' | 'MEMBER'
     teamID?: string;
+    imageUrl: string
+    imageId: string
+    
 }
 
 interface RegisterServiceResponse {
@@ -23,26 +27,31 @@ interface RegisterServiceResponse {
 }
 
 export class RegisterService {
-    private UsersRepository: UsersRepositoryInterface
+    private usersRepository: UsersRepositoryInterface
+    private imageRepository: ImageRepositoryInterface
 
-    constructor(userRepository: UsersRepositoryInterface) {
-        this.UsersRepository = userRepository
+    constructor(userRepository: UsersRepositoryInterface, imageRepository: ImageRepositoryInterface) {
+        this.usersRepository = userRepository
+        this.imageRepository = imageRepository
     }
 
     async execute(data: RegisterServiceRequest): Promise<RegisterServiceResponse> {
-        const { password, email, name, admission_date, bio, certifications, education, enrollment, phone, role, teamID } = data
+        const { password, email, name, admission_date, bio, certifications, education, enrollment, phone, role, teamID, imageUrl, imageId } = data
         const password_hash = await hash(password, 6)
 
-        const userWithSameEmail = await this.UsersRepository.findByEmail(email)
+        const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
         if (userWithSameEmail) {
-            throw new Error('Usuário já existe')
+            throw { statusCode: 409, message: "Usuário com este e-mail já existe" };
         }
 
-        const user = await this.UsersRepository.create({email,name,password_hash,admission_date,bio,certifications,education,enrollment,phone,role, ...(teamID && { team: { connect: { id: teamID } } })})
+        const user = await this.usersRepository.create({ email, name, password_hash, admission_date, imageUrl, imageId, bio, certifications, education, enrollment, phone, role, ...(teamID && { team: { connect: { id: teamID } } }) })
+
+   
 
         return {
             user,
         }
     }
+    
 }

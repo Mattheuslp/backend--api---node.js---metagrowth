@@ -13,7 +13,7 @@ export class DeleteUserService {
     }
 
     async execute({ userId }: DeleteUserServiceRequest) {
-        // Verifica se o usuário está vinculado a algum time
+        
         const user = await this.userRepository.hasTeam(userId);
 
         if (user?.team || user?.managedTeam) {

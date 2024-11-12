@@ -7,7 +7,7 @@ export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
         userId: z.string().min(1),
     });
 
-    const { userId } = authenticateBodySchema.parse(request.body);
+    const { userId } = authenticateBodySchema.parse(request.query);
 
     try {
         const deleteUser = deletetUserFactory();

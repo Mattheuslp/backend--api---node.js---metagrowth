@@ -6,10 +6,11 @@ import fastifyCookie from "@fastify/cookie";
 import fastifyCors from "@fastify/cors";
 import { env } from "../env";
 import { userRoutes } from "../controllers/users/routes";
-
+import fastifyMultipart from "@fastify/multipart";
+import { teamRoutes } from "../controllers/teams/routes";
 
 export const app = fastify()
-app.register(require('@fastify/multipart'))
+app.register(fastifyMultipart);
 
 app.register(fastifyCookie)
 
@@ -30,6 +31,7 @@ app.register(fastifyJwt, {
 })
 
 app.register(userRoutes)
+app.register(teamRoutes)
 
 // app.addHook('onRequest', (request, reply, done) => {
 //     const allowedOrigin = 'http://localhost:5173';

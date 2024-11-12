@@ -19,16 +19,18 @@ enum Role {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  name          String
-  email         String         @unique
-  role          Role           @default(MEMBER)
-  password_hash String
-  created_at    DateTime       @default(now())
-  RefreshToken  RefreshToken[]
+  id             String         @id @default(uuid())
+  name           String
+  email          String         @unique
+  imageUrl       String
+  imageId        String  
+  role           Role           @default(MEMBER)
+  password_hash  String
+  created_at     DateTime       @default(now())
+  RefreshToken   RefreshToken[]
   teamId         String?
-  team           Team?         @relation(fields: [teamId], references: [id])
-  managedTeam    Team?         @relation("Manager") 
+  team           Team?          @relation(fields: [teamId], references: [id])
+  managedTeam    Team?          @relation("Manager")
   admission_date DateTime?
   phone          String?
   enrollment     String?
@@ -50,14 +52,13 @@ model RefreshToken {
   @@map("refreshToken")
 }
 
-
 model Team {
-  id        String  @id @default(uuid())
+  id        String @id @default(uuid())
   name      String
-  managerId String @unique 
+  managerId String @unique
   manager   User   @relation("Manager", fields: [managerId], references: [id])
 
-  Users     User[]  
+  Users User[]
 
   @@map("teams")
 }

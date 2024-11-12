@@ -7,6 +7,7 @@ import { prisma } from "../../lib/prisma";
 export class PrismaUserRepository implements UsersRepositoryInterface {
 
     async create(data: Prisma.UserCreateInput) {
+ 
         return await prisma.user.create({
             data,
         })
@@ -16,7 +17,7 @@ export class PrismaUserRepository implements UsersRepositoryInterface {
         return await prisma.user.findUnique({
             where: {
                 email,
-            }
+            },
         })
     }
 
@@ -24,22 +25,24 @@ export class PrismaUserRepository implements UsersRepositoryInterface {
         return await prisma.user.findUnique({
             where: {
                 id: userId,
-            }
+            },
+            include: {
+                team: {
+                    select: {
+                        name: true,
+                    },
+                },
+            },
         })
     }
 
     async update(userId: string, updateData: Prisma.UserUpdateInput) {
-        try {
-            await prisma.user.update({
-                where: {
-                    id: userId,
-                },
-                data: updateData,
-            });
-        } catch (error) {
-            throw new Error('usuário não encontrado')
-        }
-
+        await prisma.user.update({
+            where: {
+                id: userId,
+            },
+            data: updateData,
+        });
     }
 
     async delete(userId: string) {
@@ -62,6 +65,67 @@ export class PrismaUserRepository implements UsersRepositoryInterface {
             },
         });
     }
-  
 
+    async fetch() {
+        return await prisma.user.findMany({
+            orderBy: {
+                name: 'asc'
+            }
+        })
+    }
+
+    async findUsersWithoutTeams() {
+        return await prisma.user.findMany({
+            where: {
+                teamId: null,
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                imageUrl: true,
+                imageId: true,
+                role: true,
+                created_at: true,
+                teamId: true,
+                admission_date: true,
+                phone: true,
+                enrollment: true,
+                education: true,
+                bio: true,
+                certifications: true,
+            },
+            orderBy: {
+                name: 'asc',
+            },
+        });
+    }
+    
+
+    async findUsersNotManagingTeams() {
+        return await prisma.user.findMany({
+            where: {
+                managedTeam: null, 
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                imageUrl: true,
+                imageId: true,
+                role: true,
+                created_at: true,
+                teamId: true,
+                admission_date: true,
+                phone: true,
+                enrollment: true,
+                education: true,
+                bio: true,
+                certifications: true,
+            },
+            orderBy: {
+                name: 'asc',
+            },
+        });
+    }
 }

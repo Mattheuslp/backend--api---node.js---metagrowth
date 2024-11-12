@@ -6,5 +6,8 @@ export interface UsersRepositoryInterface {
     findById(userId: string): Promise<User | null>;
     update(userId: string, updateData: Prisma.UserUpdateInput): Promise<void>;
     delete(userId: string): Promise<void>;
-    hasTeam(userId: string): Promise<User & { team: Team | null; managedTeam: Team | null } | null>; // Ajuste aqui
+    hasTeam(userId: string): Promise<User & { team: Team | null; managedTeam: Team | null } | null>; 
+    fetch(): Promise<User[] | null>
+    findUsersWithoutTeams(): Promise<Omit<User, 'password_hash'>[]>;
+    findUsersNotManagingTeams(): Promise<Omit<User, 'password_hash'>[]>; 
 }

@@ -7,6 +7,10 @@ import { refresh } from "./refresh"
 import { logout } from "./logout"
 import { updateProfile } from "./updateProfile"
 import { deleteUser } from "./delete"
+import { fetchUsers } from "./fetchUser"
+import { getUserById } from "./getUserById"
+import { fetchUsersNoTeam } from "./fetchUsersNoTeam"
+import { fetchUsersNotManagingTeam } from "./fetchUsersNotManagingTeams"
 
 export async function userRoutes(app: FastifyInstance) {
     app.post('/users', register)
@@ -14,6 +18,10 @@ export async function userRoutes(app: FastifyInstance) {
     app.get('/getUser', getUser)
     app.patch('/token/refresh', refresh)
     app.delete('/logout', logout)
-    app.patch('/users', updateProfile)
+    app.patch('/users/update', updateProfile)
     app.delete('/users', deleteUser)
+    app.get('/fetchusers', fetchUsers)
+    app.get('/getUserById', getUserById)
+    app.get('/fetchUsersWithoutTeams', fetchUsersNoTeam)
+    app.get('/fetchUsersNotManagingTeams', fetchUsersNotManagingTeam)
 }
