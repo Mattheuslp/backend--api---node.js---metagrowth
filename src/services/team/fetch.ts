@@ -1,21 +1,30 @@
-
 import { Team } from "@prisma/client";
 import { TeamsRepositoryInterface } from "../../repositories/team-repository-interface";
 
-interface FetchTeamServiceResponse {
-    team: Team[] | null
+interface FetchTeamServiceRequest {
+    id?: string; 
 }
 
-export class FetchTeamService{
-    private teamRepository: TeamsRepositoryInterface
+interface FetchTeamServiceResponse {
+    team: Team[] | Team | null;
+}
+
+export class FetchTeamService {
+    private teamRepository: TeamsRepositoryInterface;
 
     constructor(teamRepository: TeamsRepositoryInterface) {
-        this.teamRepository = teamRepository
+        this.teamRepository = teamRepository;
     }
 
-    async execute(): Promise<FetchTeamServiceResponse> {
-        const team = await this.teamRepository.fetch()
-
-        return {team}
+    async execute({ id }: FetchTeamServiceRequest): Promise<FetchTeamServiceResponse> {
+        if (id) {
+    
+            const team = await this.teamRepository.findById(id);
+            return { team };
+        } else {
+    
+            const team = await this.teamRepository.fetch();
+            return { team };
+        }
     }
 }

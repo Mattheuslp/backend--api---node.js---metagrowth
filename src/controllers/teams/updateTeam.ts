@@ -43,3 +43,5 @@ export async function updateTeam(request: FastifyRequest, reply: FastifyReply) {
         return reply.status(500).send({ message: 'Internal server error' });
     }
 }
+
+

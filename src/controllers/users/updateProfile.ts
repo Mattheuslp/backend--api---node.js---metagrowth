@@ -30,7 +30,7 @@ export async function updateProfile(request: FastifyRequest, reply: FastifyReply
 
         for await (const part of request.parts()) {
             if (part.type === 'field') {
-                // Confirma se `part.value` é uma string antes de atribuir
+             
                 fields[part.fieldname] = typeof part.value === "string" ? part.value : undefined;
             } else if (part.type === 'file') {
                 filename = part.filename;
