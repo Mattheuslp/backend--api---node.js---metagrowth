@@ -23,7 +23,7 @@ model User {
   name           String
   email          String         @unique
   imageUrl       String
-  imageId        String  
+  imageId        String
   role           Role           @default(MEMBER)
   password_hash  String
   created_at     DateTime       @default(now())
@@ -37,6 +37,7 @@ model User {
   education      String?
   bio            String?
   certifications String?
+  goals          Goal[]
 
   @@map("users")
 }
@@ -61,4 +62,17 @@ model Team {
   Users User[]
 
   @@map("teams")
+}
+
+model Goal {
+  id          String   @id @default(uuid())
+  title       String
+  startDate   DateTime
+  endDate     DateTime
+  description String
+  isCompleted Boolean  @default(false)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("goals")
 }
