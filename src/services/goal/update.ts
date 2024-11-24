@@ -1,12 +1,13 @@
 import { GoalRepositoryInterface } from '../../repositories/goal-repository-interface';
 
 export interface UpdateGoalRequest {
-    id: string; 
+    id: string;
     title?: string;
     startDate?: Date;
     endDate?: Date;
     description?: string;
     isCompleted?: boolean;
+    userId?: string; // Adicionado userId como opcional
 }
 
 export class UpdateGoalService {
@@ -16,11 +17,7 @@ export class UpdateGoalService {
         this.goalRepository = goalRepository;
     }
 
-    async execute({ id, title, startDate, endDate, description, isCompleted }: UpdateGoalRequest) {
-
-        if (!id) {
-            throw { statusCode: 400, message: 'O ID da meta é obrigatório.' };
-        }
+    async execute({ id, title, startDate, endDate, description, isCompleted, userId }: UpdateGoalRequest) {
 
         if (startDate && endDate && startDate >= endDate) {
             throw { statusCode: 400, message: 'A data de início deve ser anterior à data de fim.' };
@@ -32,6 +29,7 @@ export class UpdateGoalService {
         if (endDate !== undefined) dataToUpdate.endDate = endDate;
         if (description !== undefined) dataToUpdate.description = description;
         if (isCompleted !== undefined) dataToUpdate.isCompleted = isCompleted;
+        if (userId !== undefined) dataToUpdate.userId = userId; 
 
         await this.goalRepository.update({ id, data: dataToUpdate });
     }

@@ -16,17 +16,7 @@ export async function deleteGoal(request: FastifyRequest, reply: FastifyReply) {
 
         return reply.status(200).send({ message: 'Meta deletada com sucesso' });
     } catch (error: any) {
-        if (error instanceof z.ZodError) {
-            return reply.status(400).send({
-                message: 'Validation error',
-                issues: error.errors,
-            });
-        }
-
-        if (error.statusCode && error.message) {
-            return reply.status(error.statusCode).send({ message: error.message });
-        }
-
+        
         return reply.status(500).send({ message: 'Erro interno do servidor' });
     }
 }

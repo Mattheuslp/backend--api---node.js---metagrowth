@@ -2,7 +2,6 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { UpdateFactory } from '../../services/factories/goal/update-factory';
 
-
 export async function updateGoal(request: FastifyRequest, reply: FastifyReply) {
     const updateGoalParamsSchema = z.object({
         id: z.string().uuid(),
@@ -14,18 +13,18 @@ export async function updateGoal(request: FastifyRequest, reply: FastifyReply) {
         endDate: z.coerce.date().optional(),
         description: z.string().optional(),
         isCompleted: z.boolean().optional(),
+        userId: z.string().uuid().optional(), 
     });
 
     try {
-
         const { id } = updateGoalParamsSchema.parse(request.params);
-        const { title, startDate, endDate, description, isCompleted } = updateGoalBodySchema.parse(request.body);
+        const { title, startDate, endDate, description, isCompleted, userId } =
+            updateGoalBodySchema.parse(request.body);
 
         const updateGoalService = UpdateFactory();
-        await updateGoalService.execute({ id, title, startDate, endDate, description, isCompleted });
+        await updateGoalService.execute({ id, title, startDate, endDate, description, isCompleted, userId });
 
         return reply.status(200).send({ message: 'Meta atualizada com sucesso' });
-        
     } catch (error: any) {
         if (error instanceof z.ZodError) {
             return reply.status(400).send({

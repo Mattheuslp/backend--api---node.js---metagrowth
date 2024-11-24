@@ -29,7 +29,7 @@ export class PrismaTeamRepository implements TeamsRepositoryInterface {
         })
     }
 
-    async fetch () {
+    async fetch() {
         return await prisma.team.findMany()
     }
 
@@ -48,7 +48,7 @@ export class PrismaTeamRepository implements TeamsRepositoryInterface {
                 manager: {
                     select: {
                         id: true,
-                        name: true, 
+                        name: true,
                     },
                 },
             },
@@ -56,9 +56,18 @@ export class PrismaTeamRepository implements TeamsRepositoryInterface {
     }
 
     async update(id: string, data: Prisma.TeamUpdateInput) {
+    
         return await prisma.team.update({
             where: { id },
             data,
         });
+    }
+
+    async delete(id: string) {
+        await prisma.team.delete({
+            where: {
+                id
+            }
+        })
     }
 }

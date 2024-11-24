@@ -20,12 +20,12 @@ export class UpdateService {
     }
 
     async execute({ teamId, managerId, name, userIds }: UpdateServiceRequest): Promise<UpdateServiceResponse> {  
-
+    
         const manager = await this.teamRepository.findByManagerId(managerId);
         if (manager && manager.id !== teamId) {
             throw { statusCode: 409, message: 'Usuário já é gestor de outra equipe' };
         }
-
+      
     
         if (name) {
             const teamName = await this.teamRepository.findByName(name);
@@ -34,7 +34,7 @@ export class UpdateService {
             }
         }
 
-        
+     
         const team = await this.teamRepository.update(teamId, {
             name,
             manager: { connect: { id: managerId } },

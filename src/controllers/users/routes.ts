@@ -12,10 +12,9 @@ import { fetchUsers } from "./fetchusers"
 export async function userRoutes(app: FastifyInstance) {
     app.post('/users', register)
     app.post('/sessions', authenticate)
-    // app.get('/getUser', getUser)
     app.patch('/token/refresh', refresh)
     app.delete('/logout', logout)
-    app.patch('/users/update', updateProfile)
+    app.patch('/users/:userId', updateProfile)
     app.delete('/users', deleteUser)
     app.get('/fetchusers', fetchUsers)
 }

@@ -8,12 +8,7 @@ export class DeleteGoalService {
     }
 
     async execute(id: string): Promise<void> {
-     
-        if (!id) {
-            throw { statusCode: 400, message: 'O ID da meta é obrigatório.' };
-        }
-
-  
+       
         await this.goalRepository.delete(id);
     }
 }

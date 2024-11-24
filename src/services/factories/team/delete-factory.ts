@@ -1,9 +1,9 @@
 import { PrismaTeamRepository } from "../../../repositories/prisma/prisma-team-repository"
-import { CreateService } from "../../team/create"
+import { DeleteService } from "../../team/delete"
 
-export function RegisterFactory() {
+export function DeleteFactory() {
     const prismaTeamRepository = new PrismaTeamRepository()
-    const teamService = new CreateService(prismaTeamRepository)
+    const teamService = new DeleteService(prismaTeamRepository)
 
     return teamService
 }

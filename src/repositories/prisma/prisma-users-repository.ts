@@ -37,39 +37,40 @@ export const userSelectFields = {
   }>;
 
 export class PrismaUserRepository implements UsersRepositoryInterface {
-  async create(data: Prisma.UserCreateInput): Promise<User> {
+  async create(data: Prisma.UserCreateInput){
     return await prisma.user.create({
       data,
     });
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string){
     return await prisma.user.findUnique({
       where: { email },
     });
   }
 
-  async findById(userId: string): Promise<UserWithoutPasswordHash | null> {
+  async findById(userId: string) {
     return await prisma.user.findUnique({
       where: { id: userId },
       select: userSelectFields,
     });
   }
 
-  async update(userId: string, updateData: Prisma.UserUpdateInput): Promise<void> {
+  async update(userId: string, updateData: Prisma.UserUpdateInput) {
+    console.log('user', updateData)
     await prisma.user.update({
       where: { id: userId },
       data: updateData,
     });
   }
 
-  async delete(userId: string): Promise<void> {
+  async delete(userId: string) {
     await prisma.user.delete({
       where: { id: userId },
     });
   }
 
-  async hasTeam(userId: string): Promise<User & { team: Team | null; managedTeam: Team | null } | null> {
+  async hasTeam(userId: string) {
     return await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -79,26 +80,55 @@ export class PrismaUserRepository implements UsersRepositoryInterface {
     });
   }
 
-  async fetch(): Promise<UserWithoutPasswordHash[]> {
+  async fetch(){
     return await prisma.user.findMany({
       select: userSelectFields,
       orderBy: { name: 'asc' },
     });
   }
 
-  async findUsersWithoutTeams(): Promise<UserWithoutPasswordHash[]> {
+  async findUsersWithoutTeams() {
     return await prisma.user.findMany({
-      where: { teamId: null },
+        where: {
+            AND: [
+                { teamId: null },
+                { role: { not: 'MANAGER' } } 
+            ],
+        },
+        select: userSelectFields,
+        orderBy: { name: 'asc' },
+    });
+}
+
+  async findUsersNotManagingTeams() {
+    return await prisma.user.findMany({
+      where: {
+        managedTeam: null,
+        role: 'MANAGER',
+      },
       select: userSelectFields,
-      orderBy: { name: 'asc' },
+      orderBy: { name: 'asc' }, 
     });
   }
 
-  async findUsersNotManagingTeams(): Promise<UserWithoutPasswordHash[]> {
-    return await prisma.user.findMany({
-      where: { managedTeam: null },
-      select: userSelectFields,
-      orderBy: { name: 'asc' },
+  async findTeamMembersByManager(managerId: string) {
+    const team = await prisma.team.findUnique({
+      where: {
+        managerId,
+      },
+      select: {
+        Users: {
+          select: userSelectFields,
+        },
+      },
     });
+  
+    if (!team) {
+      throw new Error("Gerente não gerencia nenhum time");
+    }
+  
+    return team.Users;
   }
+
+
 }

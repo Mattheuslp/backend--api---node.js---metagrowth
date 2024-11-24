@@ -38,8 +38,23 @@ model User {
   bio            String?
   certifications String?
   goals          Goal[]
+  feedbacks      Feedback[]
 
   @@map("users")
+}
+
+model Feedback {
+  id             String @id @default(uuid())
+  technicalSkill Int
+  resilience     Int
+  sociability    Int
+  description    String
+  userId         String
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@map("feedbacks")
 }
 
 model RefreshToken {

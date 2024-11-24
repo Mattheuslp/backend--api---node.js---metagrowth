@@ -6,12 +6,15 @@ export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
     const authenticateBodySchema = z.object({
         userId: z.string().min(1),
     });
+    
+    await request.jwtVerify();
 
     const { userId } = authenticateBodySchema.parse(request.query);
+    const requestUserId = request.user.sub
 
     try {
         const deleteUser = deletetUserFactory();
-        await deleteUser.execute({ userId });
+        await deleteUser.execute({ userId,  requestUserId });
 
         return reply.status(200).send({ message: "Usuário excluído com sucesso." });
     } catch (error) {

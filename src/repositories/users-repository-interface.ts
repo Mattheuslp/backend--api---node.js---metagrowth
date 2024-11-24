@@ -12,4 +12,5 @@ export interface UsersRepositoryInterface {
   fetch(): Promise<UserWithoutPasswordHash[]>;
   findUsersWithoutTeams(): Promise<UserWithoutPasswordHash[]>;
   findUsersNotManagingTeams(): Promise<UserWithoutPasswordHash[]>;
+  findTeamMembersByManager(managerId: string): Promise<UserWithoutPasswordHash[]>;
 }

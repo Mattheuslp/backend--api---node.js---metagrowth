@@ -2,11 +2,10 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { updateUserFactory } from "../../services/factories/user/update-user-factory";
 import { uploadFactory } from '../../services/factories/image/upload-factory';
-import { Multipart } from "@fastify/multipart";
+import { hash } from "bcryptjs";
 
 export async function updateProfile(request: FastifyRequest, reply: FastifyReply) {
     const updateUserSchema = z.object({
-        userId: z.string().min(1),
         name: z.string().min(1).optional(),
         email: z.string().email().optional(),
         role: z.enum(['MANAGER', 'MEMBER']).optional(),
@@ -17,6 +16,11 @@ export async function updateProfile(request: FastifyRequest, reply: FastifyReply
         bio: z.string().optional(),
         certifications: z.string().optional(),
         teamId: z.string().optional(),
+        password: z.string().min(6).optional(),
+    });
+
+    const paramsSchema = z.object({
+        userId: z.string().uuid(),
     });
 
     try {
@@ -24,13 +28,17 @@ export async function updateProfile(request: FastifyRequest, reply: FastifyReply
             return reply.status(400).send({ message: 'Request is not multipart' });
         }
 
+        
+        const { userId } = paramsSchema.parse(request.params);
+
         const fields: Record<string, string | undefined> = {};
         let fileBuffer: Buffer | undefined;
         let filename: string | undefined;
 
+       
         for await (const part of request.parts()) {
+          
             if (part.type === 'field') {
-             
                 fields[part.fieldname] = typeof part.value === "string" ? part.value : undefined;
             } else if (part.type === 'file') {
                 filename = part.filename;
@@ -42,22 +50,12 @@ export async function updateProfile(request: FastifyRequest, reply: FastifyReply
             }
         }
 
-        const parsedData = updateUserSchema.parse({
-            userId: fields.userId,
-            name: fields.name,
-            email: fields.email,
-            role: fields.role,
-            admission_date: fields.admission_date,
-            phone: fields.phone,
-            enrollment: fields.enrollment,
-            education: fields.education,
-            bio: fields.bio,
-            certifications: fields.certifications,
-            teamId: fields.teamID,
-        });
-
+        console.log('a', fields)
+        const parsedData = updateUserSchema.parse(fields);
+        console.log('b', parsedData)
         let imageId, imageUrl;
 
+        
         if (fileBuffer && filename) {
             const uploadService = uploadFactory();
             const uploadResponse = await uploadService.upload({
@@ -70,15 +68,23 @@ export async function updateProfile(request: FastifyRequest, reply: FastifyReply
         }
 
         const updateUser = updateUserFactory();
-        const { userId, admission_date, ...dataToUpdate } = parsedData;
+        const { admission_date, password, ...dataToUpdate } = parsedData;
 
-        const finalDataToUpdate = {
+        
+        const finalDataToUpdate: any = {
             ...dataToUpdate,
             admission_date: admission_date ? new Date(admission_date) : undefined,
             ...(imageId && { imageId }),
             ...(imageUrl && { imageUrl }),
         };
 
+        
+        if (password) {
+            const password_hash = await hash(password, 6);
+            finalDataToUpdate.password_hash = password_hash;
+        }
+
+     
         await updateUser.execute({
             userId,
             updateData: finalDataToUpdate,

@@ -3,11 +3,8 @@ import { z } from 'zod';
 import { RegisterFactory } from '../../services/factories/goal/create-factory';
 
 export async function createGoal(request: FastifyRequest, reply: FastifyReply) {
-    const createGoalParamsSchema = z.object({
-        userId: z.string().uuid(),
-    });
-
     const createGoalBodySchema = z.object({
+        userId: z.string().uuid(),
         title: z.string(),
         startDate: z.coerce.date(),
         endDate: z.coerce.date(),
@@ -16,8 +13,8 @@ export async function createGoal(request: FastifyRequest, reply: FastifyReply) {
     });
 
     try {
-        const { userId } = createGoalParamsSchema.parse(request.params);
-        const { title, startDate, endDate, description, isCompleted } = createGoalBodySchema.parse(request.body);
+
+        const { title, startDate, endDate, description, isCompleted, userId } = createGoalBodySchema.parse(request.body);
 
 
         const createGoalService = RegisterFactory();

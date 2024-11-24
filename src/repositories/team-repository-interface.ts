@@ -7,4 +7,5 @@ export interface TeamsRepositoryInterface {
     findByName(name: string): Promise<Team | null>
     fetch(): Promise<Team[] | null>
     update(id: string, data: Prisma.TeamUpdateInput): Promise<Team | null>
+    delete(id: string): Promise<void>
 }
