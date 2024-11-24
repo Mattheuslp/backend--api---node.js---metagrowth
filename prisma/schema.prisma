@@ -19,26 +19,26 @@ enum Role {
 }
 
 model User {
-  id             String         @id @default(uuid())
-  name           String
-  email          String         @unique
-  imageUrl       String
-  imageId        String
-  role           Role           @default(MEMBER)
-  password_hash  String
-  created_at     DateTime       @default(now())
-  RefreshToken   RefreshToken[]
-  teamId         String?
-  team           Team?          @relation(fields: [teamId], references: [id])
-  managedTeam    Team?          @relation("Manager")
-  admission_date DateTime?
-  phone          String?
-  enrollment     String?
-  education      String?
-  bio            String?
-  certifications String?
-  goals          Goal[]
-  feedbacks      Feedback[]
+  id                String     @id @default(uuid())
+  name              String
+  email             String     @unique
+  imageUrl          String
+  imageId           String
+  role              Role       @default(MEMBER)
+  password_hash     String
+  created_at        DateTime   @default(now())
+  teamId            String?
+  team              Team?      @relation(fields: [teamId], references: [id])
+  managedTeam       Team?      @relation("Manager")
+  admission_date    DateTime?
+  phone             String?
+  enrollment        String?
+  education         String?
+  bio               String?
+  certifications    String?
+  goals             Goal[]
+  feedbacksGiven    Feedback[] @relation("FeedbackGiven")
+  feedbacksReceived Feedback[] @relation("FeedbackReceived")
 
   @@map("users")
 }
@@ -50,22 +50,14 @@ model Feedback {
   sociability    Int
   description    String
   userId         String
-  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User   @relation("FeedbackReceived", fields: [userId], references: [id], onDelete: Cascade)
+
+  givenByUserId String
+  givenByUser   User   @relation("FeedbackGiven", fields: [givenByUserId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
   @@map("feedbacks")
-}
-
-model RefreshToken {
-  id        String   @id @default(uuid())
-  userId    String
-  token     String   @unique
-  revoked   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("refreshToken")
 }
 
 model Team {

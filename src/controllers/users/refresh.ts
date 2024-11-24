@@ -1,19 +1,9 @@
 
 import { FastifyReply, FastifyRequest } from "fastify";
-import { authenticateFactory } from "../../services/factories/user/authenticate-factory";
-
 
 export async function refresh(request: FastifyRequest, reply: FastifyReply) {
     try {
         await request.jwtVerify({ onlyCookie: true })
-
-        const authenticate = authenticateFactory()
-
-        const storedToken = await authenticate.getToken(request.cookies.refreshToken || '')
-
-        if (!storedToken || storedToken.revoked) {
-            throw new Error()
-        }
 
         const token = await reply.jwtSign({}, {
             sign: {
@@ -27,8 +17,6 @@ export async function refresh(request: FastifyRequest, reply: FastifyReply) {
                 expiresIn: '7d'
             }
         })
-
-       await authenticate.saveRefreshToken({ refreshToken, userId: request.user.sub })
 
         return reply
             .setCookie('refreshToken', refreshToken, {

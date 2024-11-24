@@ -9,6 +9,7 @@ import { userRoutes } from "../controllers/users/routes";
 import fastifyMultipart from "@fastify/multipart";
 import { teamRoutes } from "../controllers/teams/routes";
 import { goalRoutes } from "../controllers/goal/routes";
+import { feedbackRoutes } from "../controllers/feedback/routes";
 
 export const app = fastify()
 app.register(fastifyMultipart);
@@ -34,6 +35,7 @@ app.register(fastifyJwt, {
 app.register(userRoutes)
 app.register(teamRoutes)
 app.register(goalRoutes)
+app.register(feedbackRoutes)
 
 // app.addHook('onRequest', (request, reply, done) => {
 //     const allowedOrigin = 'http://localhost:5173';

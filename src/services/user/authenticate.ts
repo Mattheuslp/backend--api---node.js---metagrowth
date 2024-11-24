@@ -2,7 +2,6 @@
 import { User } from "@prisma/client";
 import { compare } from "bcryptjs";
 import { UsersRepositoryInterface } from "../../repositories/users-repository-interface";
-import { RefreshTokenRepositoryInterface } from "../../repositories/refreshToken-repository-interface";
 
 
 interface AuthenticateServiceRequest {
@@ -16,12 +15,12 @@ interface AuthenticateServiceRespone {
 
 export class AuthenticateService {
     private userRepository: UsersRepositoryInterface
-    private refreshTokenRepository: RefreshTokenRepositoryInterface
 
 
-    constructor(userRepository: UsersRepositoryInterface, refreshTokenRepository: RefreshTokenRepositoryInterface) {
+
+    constructor(userRepository: UsersRepositoryInterface, ) {
         this.userRepository = userRepository
-        this.refreshTokenRepository = refreshTokenRepository
+  
     }
 
     async execute({email, password}: AuthenticateServiceRequest): Promise<AuthenticateServiceRespone> {
@@ -41,22 +40,22 @@ export class AuthenticateService {
     }
 
 
-    async saveRefreshToken({refreshToken, userId}: {refreshToken: string; userId: string}) {
-        await this.refreshTokenRepository.create({refreshToken, userId})
-    }
+//     async saveRefreshToken({refreshToken, userId}: {refreshToken: string; userId: string}) {
+//         await this.refreshTokenRepository.create({refreshToken, userId})
+//     }
 
-    async revokeByUserId(userId: string) {
-        await this.refreshTokenRepository.revokeByUserId(userId)
-    }
+//     async revokeByUserId(userId: string) {
+//         await this.refreshTokenRepository.revokeByUserId(userId)
+//     }
 
-    async revokeByRefreshToken(refreshToken: string) {
-        await this.refreshTokenRepository.revokeByRefreshToken(refreshToken)
-    }
+//     async revokeByRefreshToken(refreshToken: string) {
+//         await this.refreshTokenRepository.revokeByRefreshToken(refreshToken)
+//     }
 
 
-    async getToken(refreshToken: string) {
-      const storedToken =  await this.refreshTokenRepository.getToken(refreshToken)
+//     async getToken(refreshToken: string) {
+//       const storedToken =  await this.refreshTokenRepository.getToken(refreshToken)
 
-      return storedToken
-    }
-}
+//       return storedToken
+//     }
+ }

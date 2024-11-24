@@ -32,8 +32,7 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
             }
         })
 
-        authenticate.saveRefreshToken({refreshToken, userId: user.id})
-
+    
         return reply
         .setCookie('refreshToken', refreshToken, {
             path: '/',

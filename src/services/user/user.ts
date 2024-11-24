@@ -28,11 +28,11 @@ interface RegisterServiceResponse {
 
 export class RegisterService {
     private usersRepository: UsersRepositoryInterface
-    private imageRepository: ImageRepositoryInterface
+  
 
-    constructor(userRepository: UsersRepositoryInterface, imageRepository: ImageRepositoryInterface) {
+    constructor(userRepository: UsersRepositoryInterface) {
         this.usersRepository = userRepository
-        this.imageRepository = imageRepository
+       
     }
 
     async execute(data: RegisterServiceRequest): Promise<RegisterServiceResponse> {
