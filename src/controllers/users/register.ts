@@ -65,7 +65,6 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     const imageUrl = uploadResponse.imageUrl;
 
 
-
     await registerService.execute({
       ...parsedData,
         imageId,

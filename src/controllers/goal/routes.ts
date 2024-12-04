@@ -5,6 +5,7 @@ import { updateGoal } from "./update"
 import { deleteGoal } from "./delete"
 import { fetchGoal } from "./fetchGoal"
 import { fetchGoalMetrics } from "./fetchGoalMetrics"
+import { fetchGoalReport } from "./fetchGoalReport"
 
 export async function goalRoutes(app: FastifyInstance) {
     app.post('/goals', createGoal)
@@ -12,4 +13,5 @@ export async function goalRoutes(app: FastifyInstance) {
     app.delete('/goals/:id', deleteGoal)
     app.get('/goals/:id?', fetchGoal)
     app.get('/goals/metrics', fetchGoalMetrics)
+    app.get('/goals/reports', fetchGoalReport)
 }

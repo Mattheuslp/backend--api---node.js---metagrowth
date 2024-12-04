@@ -2,8 +2,6 @@
 import { hash } from 'bcryptjs'
 import { UsersRepositoryInterface } from "../../repositories/users-repository-interface";
 import { User } from '@prisma/client';
-import { ImageRepositoryInterface } from '../../repositories/cloudflare/image-repository-interface';
-
 
 export interface RegisterServiceRequest {
     name: string;
@@ -19,7 +17,6 @@ export interface RegisterServiceRequest {
     teamID?: string;
     imageUrl: string
     imageId: string
-    
 }
 
 interface RegisterServiceResponse {
