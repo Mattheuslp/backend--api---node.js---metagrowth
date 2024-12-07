@@ -12,7 +12,7 @@ export async function deleteTeam(request: FastifyRequest, reply: FastifyReply) {
     try {
         const { teamId } = deleteParamsSchema.parse(request.params);
 
-        console.log('a', teamId)
+ 
         const deleteService = DeleteFactory();
         await deleteService.execute({ teamId });
 

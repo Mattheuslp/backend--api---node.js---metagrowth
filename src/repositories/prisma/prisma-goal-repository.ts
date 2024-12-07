@@ -62,7 +62,6 @@ export class PrismaGoalRepository implements GoalRepositoryInterface {
             throw new Error("Time não encontrado ou você não é um gerente.");
         }
     
-        
         return await prisma.goal.findMany({
             where: {
                 userId: { in: team.Users.map(user => user.id) }, 
@@ -112,7 +111,7 @@ export class PrismaGoalRepository implements GoalRepositoryInterface {
             if (!team) {
                 throw new Error("Time não encontrado ou você não é um gerente.");
             }
-    
+   
             return await prisma.goal.count({
                 where: {
                     userId: { in: team.Users.map(user => user.id) },

@@ -4,6 +4,7 @@ import { TeamsRepositoryInterface } from "../../repositories/team-repository-int
 export interface FetchGoalMetricsRequest {
     userId: string;
     metric?: string;
+    metricsByTeam: boolean
 }
 
 export class FetchGoalMetricsService {
@@ -15,35 +16,36 @@ export class FetchGoalMetricsService {
         this.teamRepository = teamRepository;
     }
 
-    async execute({ userId, metric }: FetchGoalMetricsRequest) {
-        const teamManaged = await this.teamRepository.findByManagerId(userId);
-        const isManager = !!teamManaged;
+    async execute({ userId, metric, metricsByTeam }: FetchGoalMetricsRequest) {
+        // const teamManaged = await this.teamRepository.findByManagerId(userId);
+        // const isManager = !!teamManaged;
 
         if (metric === "achieved") {
-            const achievedGoals = await this.goalRepository.countAchievedGoals(userId, isManager);
+            
+            const achievedGoals = await this.goalRepository.countAchievedGoals(userId, metricsByTeam);
             return { achievedGoals };
         }
 
         if (metric === "total") {
-            const totalGoals = await this.goalRepository.countTotalGoals(userId, isManager);
+            const totalGoals = await this.goalRepository.countTotalGoals(userId, metricsByTeam);
             return { totalGoals };
         }
 
         if (metric === "pending") {
-            const pendingGoals = await this.goalRepository.countPendingGoals(userId, isManager);
+            const pendingGoals = await this.goalRepository.countPendingGoals(userId, metricsByTeam);
             return { pendingGoals };
         }
 
         if (metric === "percentage") {
-            const achievedGoals = await this.goalRepository.countAchievedGoals(userId, isManager);
-            const totalGoals = await this.goalRepository.countTotalGoals(userId, isManager);
+            const achievedGoals = await this.goalRepository.countAchievedGoals(userId, metricsByTeam);
+            const totalGoals = await this.goalRepository.countTotalGoals(userId, metricsByTeam);
             const percentage = totalGoals > 0 ? (achievedGoals / totalGoals) * 100 : 0;
             return { percentage: Math.round(percentage) }; 
         }
 
-        const achievedGoals = await this.goalRepository.countAchievedGoals(userId, isManager);
-        const totalGoals = await this.goalRepository.countTotalGoals(userId, isManager);
-        const pendingGoals = await this.goalRepository.countPendingGoals(userId, isManager);
+        const achievedGoals = await this.goalRepository.countAchievedGoals(userId, metricsByTeam);
+        const totalGoals = await this.goalRepository.countTotalGoals(userId, metricsByTeam);
+        const pendingGoals = await this.goalRepository.countPendingGoals(userId, metricsByTeam);
         const percentage = totalGoals > 0 ? (achievedGoals / totalGoals) * 100 : 0;
 
         return {

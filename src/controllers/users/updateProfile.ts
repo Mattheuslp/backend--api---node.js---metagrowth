@@ -50,9 +50,9 @@ export async function updateProfile(request: FastifyRequest, reply: FastifyReply
             }
         }
 
-        console.log('a', fields)
+
         const parsedData = updateUserSchema.parse(fields);
-        console.log('b', parsedData)
+
         let imageId, imageUrl;
 
         

@@ -50,14 +50,23 @@ export class PrismaUserRepository implements UsersRepositoryInterface {
   }
 
   async findById(userId: string) {
-    return await prisma.user.findUnique({
+    const user =  await prisma.user.findUnique({
       where: { id: userId },
-      select: userSelectFields,
+      select: userSelectFields
     });
+
+    if(!user) {
+      return null
+    }
+
+    return {
+      ...user,
+      hasTeam: !!user?.managedTeam
+    }
   }
 
   async update(userId: string, updateData: Prisma.UserUpdateInput) {
-    console.log('user', updateData)
+
     await prisma.user.update({
       where: { id: userId },
       data: updateData,
@@ -92,7 +101,6 @@ export class PrismaUserRepository implements UsersRepositoryInterface {
         where: {
             AND: [
                 { teamId: null },
-                { role: { not: 'MANAGER' } } 
             ],
         },
         select: userSelectFields,

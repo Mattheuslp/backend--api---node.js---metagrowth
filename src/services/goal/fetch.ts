@@ -14,15 +14,29 @@ export class FetchGoalService {
         this.teamRepository = teamRepository;
     }
 
-    async execute({ userId }: FetchGoalRequest) {
+    // async execute({ userId }: FetchGoalRequest) {
 
+    //     const teamManaged = await this.teamRepository.findByManagerId(userId);
+    //     console.log('team', teamManaged)
+    //     if (teamManaged) {
+    //         return await this.goalRepository.fetchByTeamManager(userId);
+    //     }
+
+    //     return await this.goalRepository.fetchByUserId(userId);
+    // }
+
+    async fetchByMemberId({ userId }: FetchGoalRequest) {
+        return await this.goalRepository.fetchByUserId(userId);
+    }
+
+    async fetchByManagerId({ userId }: FetchGoalRequest) {
         const teamManaged = await this.teamRepository.findByManagerId(userId);
 
         if (teamManaged) {
             return await this.goalRepository.fetchByTeamManager(userId);
         }
         
-        return await this.goalRepository.fetchByUserId(userId);
+        return []
     }
 
     async fetchById(goalId: string) {

@@ -21,6 +21,7 @@ export async function fetchUsers(request: FastifyRequest, reply: FastifyReply) {
     const { users } = await fetchUserService.execute({
       userId,
       noTeam,
+      loggedUser: noTeam ? request.user.sub : undefined,
       notManagingTeam,
       currentUserId: currentUser ? request.user.sub : undefined,
       managerId: managerId ? request.user.sub : undefined,

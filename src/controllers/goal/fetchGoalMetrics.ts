@@ -1,15 +1,25 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { FetchGoalMetricsFactory } from "../../services/factories/goal/fetch-goal-metrics-factory";
+import { z } from "zod";
 
 export async function fetchGoalMetrics(request: FastifyRequest, reply: FastifyReply) {
+
+    const fetchGoalMetricsQueryParamsSchema = z.object({
+        metric: z.string().optional(),
+        metricsByTeam: z.preprocess(
+            (value) => value === "true",
+            z.boolean()
+        ),
+    })
+
     try {
         await request.jwtVerify();
 
         const userId = request.user.sub;
-        const query = request.query as { metric?: string };
+        const { metric, metricsByTeam } = fetchGoalMetricsQueryParamsSchema.parse(request.query)
 
         const fetchGoalMetricsService = FetchGoalMetricsFactory();
-        const metrics = await fetchGoalMetricsService.execute({ userId, metric: query.metric });
+        const metrics = await fetchGoalMetricsService.execute({ userId, metric, metricsByTeam });
 
         return reply.status(200).send(metrics);
     } catch (error: any) {

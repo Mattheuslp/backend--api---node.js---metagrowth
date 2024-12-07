@@ -5,6 +5,7 @@ import { UsersRepositoryInterface } from "../../repositories/users-repository-in
 interface FetchUserServiceRequest {
   userId?: string;
   noTeam?: boolean;
+  loggedUser? :string;
   notManagingTeam?: boolean;
   currentUserId?: string;
   managerId?: string; 
@@ -35,6 +36,7 @@ export class FetchUserService {
   async execute({
     userId,
     noTeam,
+    loggedUser,
     notManagingTeam,
     currentUserId,
     managerId,
@@ -58,12 +60,18 @@ export class FetchUserService {
     }
 
     if (noTeam) {
-      const users = await this.userRepository.findUsersWithoutTeams();
+      let users = await this.userRepository.findUsersWithoutTeams();
+
+      if (loggedUser) {
+        users = users.filter(user => user.id !== loggedUser);
+      }
+    
       return { users };
     }
 
     if (notManagingTeam) {
       const users = await this.userRepository.findUsersNotManagingTeams();
+
       return { users };
     }
 
