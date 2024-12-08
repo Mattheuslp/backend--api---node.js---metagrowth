@@ -61,7 +61,7 @@ export class PrismaUserRepository implements UsersRepositoryInterface {
 
     return {
       ...user,
-      hasTeam: !!user?.managedTeam
+      managinTeam: !!user?.managedTeam
     }
   }
 

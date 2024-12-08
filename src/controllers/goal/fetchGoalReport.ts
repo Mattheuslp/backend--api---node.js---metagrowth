@@ -13,6 +13,8 @@ export async function fetchGoalReport(request: FastifyRequest, reply: FastifyRep
 
         return reply.status(200).send(report);
     } catch (error: any) {
+        console.error("Erro na fetchGoalReport:", error); // Log do erro
+
         if (error.statusCode && error.message) {
             return reply.status(error.statusCode).send({ message: error.message });
         }

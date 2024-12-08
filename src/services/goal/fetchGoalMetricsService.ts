@@ -9,16 +9,13 @@ export interface FetchGoalMetricsRequest {
 
 export class FetchGoalMetricsService {
     private goalRepository: GoalRepositoryInterface;
-    private teamRepository: TeamsRepositoryInterface;
 
-    constructor(goalRepository: GoalRepositoryInterface, teamRepository: TeamsRepositoryInterface) {
+    constructor(goalRepository: GoalRepositoryInterface) {
         this.goalRepository = goalRepository;
-        this.teamRepository = teamRepository;
     }
 
     async execute({ userId, metric, metricsByTeam }: FetchGoalMetricsRequest) {
-        // const teamManaged = await this.teamRepository.findByManagerId(userId);
-        // const isManager = !!teamManaged;
+
 
         if (metric === "achieved") {
             

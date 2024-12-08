@@ -2,7 +2,7 @@ import { Prisma, Team, User } from "@prisma/client";
 import { UserWithoutPasswordHash } from "./prisma/prisma-users-repository";
 
 type UserWithHasTeam = UserWithoutPasswordHash & {
-  hasTeam: boolean;
+  managinTeam: boolean;
 };
 
 export interface UsersRepositoryInterface {

@@ -3,17 +3,27 @@ import { OpenAiRepositoryInterface } from "./openAi-repository-interface";
 
 export class OpenAiMetricsRepository implements OpenAiRepositoryInterface {
   async getGoalReport(goals: any) {
-    const content = `Por favor, gere um relatório que forneça insights sobre as metas da minha equipe. As metas estão listadas abaixo com os seguintes detalhes: {ID}-{TÍTULO}-{DATA DE INÍCIO}-{DATA DE TÉRMINO}-{DESCRIÇÃO}-{STATUS DE CONCLUSÃO}-{NOME DO COLABORADOR}. As metas são:
+    const content = `Gere um relatório com insights sobre as metas da minha equipe, com orientações de como melhorar o desempenho geral. As metas estão listadas abaixo separadas por ponto e vírgula. A estrutura de cada meta é {ID};{TÍTULO};{DATA DE INÍCIO};{DATA DE TÉRMINO};{DESCRIÇÃO};{STATUS DE CONCLUSÃO};{NOME DO COLABORADOR}. Seguem as metas:
         ${goals
-          .map(
-            (goal: any) =>
-              `${goal.id} - ${goal.title} - ${new Date(goal.startDate).toLocaleDateString(
-                "pt-BR"
-              )} - ${new Date(goal.endDate).toLocaleDateString("pt-BR")} - ${
-                goal.description
-              } - ${goal.isCompleted ? "Concluída" : "Não Concluída"} - ${goal.user.name}`
-          )
-          .join("; ")}, retorne o conteúdo estruturado como html para ser usado dentro de um componente react, então não pode haver text fora das tags e utilize tailwind para estilizar e deixar formato como um relatório e utilize a cor branca para os textos,Importante: retorne somente o HTML puro, sem envolver em blocos de código ou backticks. Não inclua \`\`\`html ou qualquer formatação de código. Apenas o conteúdo HTML.`;
+        .map(
+          (goal: any) =>
+            `${goal.id};${goal.title};${new Date(goal.startDate).toLocaleDateString("pt-BR")};${new Date(
+              goal.endDate
+            ).toLocaleDateString("pt-BR")};${goal.description};${goal.isCompleted ? "Concluída" : "Não Concluída"};${goal.user.name
+            }`
+        )
+        .join(";")}
+Retorne o resultado com as seguintes seções separadas por uma palavra-chave e duas barras "//":
+1. "INSIGHTS" - um texto com os principais insights sobre o desempenho da equipe baseado nas metas fornecidas.
+2. "DICAS" - orientações práticas de como melhorar o desempenho das metas da equipe.
+3. "ESTATÍSTICAS" - números agregados como total de metas, metas concluídas, metas pendentes.
+
+**Formato esperado do retorno**:
+INSIGHTS://Texto com insights;
+DICAS://Texto com orientações;
+ESTATÍSTICAS://TotalMetas:{número};MetasConcluídas:{número};MetasPendentes:{número};.
+Certifique-se de retornar exatamente nesse formato. Não use HTML, código ou estruturas fora desse padrão.
+`;
 
     const completion = await openAi.chat.completions.create({
       model: "gpt-4o",
